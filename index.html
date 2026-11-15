@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0e0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Titan">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<title>Project: Titan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0e0d;--s1:#1a1816;--s2:#23201d;--line:#34302b;
+  --tx:#f3efe9;--tx2:#c9c1b6;--mute:#8f877c;
+  --acc:#d6452f;--acc2:#e8a33d;--good:#5fbf86;--bad:#e06a5a;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(80px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}
+.brand{font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif;font-size:40px;letter-spacing:1px;line-height:.9}
+.brand span{color:var(--acc)}
+.tag{color:var(--mute);font-size:12.5px;margin-top:4px}
+.streak{text-align:right}
+.streak b{font-family:"Bebas Neue",sans-serif;font-size:34px;line-height:.9;color:var(--acc2)}
+.streak div{font-size:11.5px;color:var(--mute)}
+nav{display:flex;gap:4px;background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:14px;position:sticky;top:calc(6px + env(safe-area-inset-top));z-index:5}
+nav a{flex:1;text-align:center;padding:8px 4px;border-radius:9px;color:var(--tx2);text-decoration:none;font-weight:600;font-size:14px}
+nav a.on{background:var(--acc);color:#fff}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 10px;font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:22px;letter-spacing:.6px}
+.card h3 small{font-family:Inter,sans-serif;font-size:12px;color:var(--mute);letter-spacing:0;margin-left:6px}
+.hint{color:var(--mute);font-size:12.5px;margin:8px 0 0}
+.daynav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.daynav button{width:42px;height:42px;border-radius:12px;background:var(--s1);border:1px solid var(--line);font-size:22px;cursor:pointer}
+.daynav button:disabled{opacity:.3;cursor:default}
+.dlabel{text-align:center;font-weight:700;font-size:16px}
+.dsub{text-align:center;color:var(--mute);font-size:12.5px}
+.core{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pill{border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;background:var(--s2)}
+.pill .i{font-size:18px;line-height:1}
+.pill .l{font-size:12px;color:var(--tx2);margin-top:4px;font-weight:600}
+.pill.done{border-color:var(--good);background:rgba(95,191,134,.12)}
+.pill.done .l{color:var(--good)}
+.big{display:flex;align-items:baseline;gap:8px}
+input[type=number],input[type=text],select{background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;width:100%;min-width:0}
+input:focus,select:focus{border-color:var(--acc2)}
+.big input{font-family:"Bebas Neue",sans-serif;font-size:40px;padding:6px 12px;width:170px;letter-spacing:1px}
+.unit{color:var(--mute);font-weight:600}
+.bar{margin:10px 0 4px}
+.bar .top{display:flex;justify-content:space-between;font-size:13px;color:var(--tx2);margin-bottom:5px}
+.bar .top b{color:var(--tx)}
+.track{height:10px;background:var(--s2);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;border-radius:0 6px 6px 0;background:var(--acc2);transition:width .3s}
+.fill.over{background:var(--bad)}
+.fill.pro{background:var(--good)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.chip{background:var(--s2);border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:13px;cursor:pointer}
+.chip:hover{border-color:var(--acc2)}
+.chip span{color:var(--mute);margin-left:4px}
+.addrow{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:10px}
+.addrow input[type=text]{grid-column:1/-1}
+@media(min-width:560px){.addrow{grid-template-columns:1fr 90px 100px auto}.addrow input[type=text]{grid-column:auto}}
+.btn{background:var(--acc);border:0;color:#fff;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:var(--s2);border:1px solid var(--line);color:var(--tx)}
+.btn:disabled{opacity:.4;cursor:default}
+.entries{list-style:none;margin:10px 0 0;padding:0}
+.entries li{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.entries li .m{color:var(--mute);font-size:13px;margin-left:auto;margin-right:10px}
+.x{background:none;border:0;color:var(--mute);font-size:18px;cursor:pointer;padding:0 4px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg button{background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:10px 6px;font-weight:600;cursor:pointer;font-size:14px}
+.seg button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.f{display:block;font-size:12.5px;color:var(--tx2);font-weight:600}
+label.f > *{margin-top:5px}
+.stepper{display:flex;align-items:center;gap:8px;margin-top:5px}
+.stepper button{width:40px;height:42px;border-radius:10px;background:var(--s2);border:1px solid var(--line);font-size:20px;cursor:pointer}
+.stepper b{min-width:28px;text-align:center;font-size:18px}
+.checks label{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);cursor:pointer;font-size:14.5px}
+.checks label:first-child{border-top:0}
+.checks input{width:20px;height:20px;accent-color:var(--good)}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+@media(min-width:560px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tile{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:12px}
+.tile .v{font-family:"Bebas Neue",sans-serif;font-size:30px;line-height:1;letter-spacing:.5px}
+.tile .k{font-size:12px;color:var(--mute);margin-top:4px}
+.chartbox{position:relative}
+.chartbox svg{width:100%;height:auto;display:block;touch-action:pan-y}
+.tt{position:absolute;pointer-events:none;background:#000c;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12.5px;white-space:nowrap;display:none;transform:translate(-50%,-110%)}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--tx2);margin-bottom:8px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px}
+.legend i.dot{width:8px;height:8px;border-radius:50%}
+.ranges{display:flex;gap:6px;margin-bottom:8px}
+.ranges button{background:var(--s2);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:12.5px;cursor:pointer}
+.ranges button.on{border-color:var(--acc2);color:var(--acc2)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:right;padding:7px 4px;border-top:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;border-top:0}
+th:first-child,td:first-child{text-align:left}
+.plan p,.plan li{color:var(--tx2)}
+.plan b{color:var(--tx)}
+.plan ul{padding-left:18px;margin:6px 0}
+.plan li{margin:4px 0}
+.target{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 2px}
+.target div{background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.target b{font-family:"Bebas Neue",sans-serif;font-size:24px;display:block;line-height:1;color:var(--acc2)}
+.target span{font-size:11.5px;color:var(--mute)}
+.setup-cta{border-color:var(--acc);background:linear-gradient(135deg,rgba(214,69,47,.18),rgba(232,163,61,.06))}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--s2);border:1px solid var(--line);padding:7px 14px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.err{border-color:var(--bad);color:var(--bad)}
+.status{font-size:12.5px;color:var(--acc2);margin-bottom:10px}
+.empty{color:var(--mute);font-size:13.5px;padding:18px 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">PROJECT<span>:</span>TITAN</div>
+      <div class="tag">Transform into someone new.</div>
+    </div>
+    <div class="streak"><b id="streak">0</b><div>day streak</div></div>
+  </header>
+  <nav id="nav">
+    <a href="#today" data-v="today">Today</a>
+    <a href="#progress" data-v="progress">Progress</a>
+    <a href="#plan" data-v="plan">Plan</a>
+    <a href="#setup" data-v="setup">Setup</a>
+  </nav>
+  <div id="status" class="status" hidden></div>
+  <main id="view"><div class="empty">Loading your data…</div></main>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const z = n => String(n).padStart(2,"0");
+const dayStr = (d=new Date()) => d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate());
+const parseDay = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+const addDays = (s,n) => { const d=parseDay(s); d.setDate(d.getDate()+n); return dayStr(d); };
+const daysBetween = (a,b) => Math.round((parseDay(b)-parseDay(a))/864e5);
+const clone = o => o ? JSON.parse(JSON.stringify(o)) : o;
+const num = v => { const n = parseFloat(v); return isFinite(n) ? n : null; };
+const fmt = (n,d=1) => n==null ? "—" : Number(n).toFixed(d);
+const fmtDate = (s,opts={month:"short",day:"numeric"}) => parseDay(s).toLocaleDateString(undefined,opts);
+
+const S = { db:null, profile:null, logs:{}, day:dayStr(), view:"today", loaded:false, range:30, deferred:false };
+const dirty = new Set(), timers = {}, chains = {};
+
+/* ---------- targets ---------- */
+const ACT = {sedentary:[1.2,"Mostly sitting"],light:[1.375,"Light: walking around campus"],moderate:[1.55,"Moderate: lifting 3–5×/week"],high:[1.725,"High: lifting + lots of walking/sport"]};
+function targets(){
+  const p = S.profile || {};
+  const w = latestWeight() ?? p.startWeight;
+  if(!p.heightIn || !p.age || !w) return null;
+  const kg = w*0.4536, cm = p.heightIn*2.54;
+  const bmr = 10*kg + 6.25*cm - 5*p.age + 5;
+  const tdee = bmr * (ACT[p.activity]?.[0] || 1.55);
+  let kcal = Math.max(1500, Math.round((tdee-500)/50)*50);
+  if(p.calOverride) kcal = p.calOverride;
+  let protein = Math.round(Math.min(200, (p.goalWeight || w))/5)*5;
+  if(p.proteinOverride) protein = p.proteinOverride;
+  return {kcal, protein, tdee:Math.round(tdee/10)*10, steps:p.stepGoal || 8000, sleep:8};
+}
+
+/* ---------- data access ---------- */
+const blankLog = d => ({date:d, weight:null, food:[], workout:"", steps:null, water:0, sleep:null, checks:{}});
+const getLog = d => S.logs[d] || blankLog(d);
+function editLog(d, fn, full=false){
+  const l = clone(getLog(d)); fn(l); S.logs[d] = l;
+  save("logs/"+d, l);
+  updateDerived(); if(full) render();
+}
+function editProfile(fn){
+  const p = clone(S.profile) || {meals:[]}; fn(p); S.profile = p;
+  save("profile/main", p, 0);
+}
+const KEY = "titan.v1";
+function persist(){
+  try{ localStorage.setItem(KEY, JSON.stringify({v:1, profile:S.profile, logs:S.logs, savedAt:new Date().toISOString()})); }
+  catch(e){ toast("Couldn't save on this phone — make a backup in Setup", true); }
+}
+function save(){ clearTimeout(timers.p); timers.p = setTimeout(persist, 250); }
+window.addEventListener("pagehide", persist);
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden") persist(); });
+
+/* ---------- stats ---------- */
+const weighIns = () => Object.values(S.logs).filter(l=>l.weight).map(l=>({d:l.date,w:l.weight})).sort((a,b)=>a.d<b.d?-1:1);
+const latestWeight = () => { const w = weighIns(); return w.length ? w[w.length-1].w : null; };
+function trendAt(d){ // 7-day average of weigh-ins in the 7 days ending d
+  const pts = weighIns().filter(p=>p.d<=d && daysBetween(p.d,d)<7);
+  return pts.length ? pts.reduce((s,p)=>s+p.w,0)/pts.length : null;
+}
+function weeklyRate(){ // lbs per week from linear fit over last 21 days
+  const today = dayStr();
+  const pts = weighIns().filter(p=>daysBetween(p.d,today)<21);
+  if(pts.length<5) return null;
+  const xs = pts.map(p=>-daysBetween(p.d,today)), ys = pts.map(p=>p.w);
+  const mx = xs.reduce((a,b)=>a+b)/xs.length, my = ys.reduce((a,b)=>a+b)/ys.length;
+  let num_=0, den=0; xs.forEach((x,i)=>{num_+=(x-mx)*(ys[i]-my); den+=(x-mx)**2;});
+  return den ? num_/den*7 : null;
+}
+const kcalOf = l => (l.food||[]).reduce((s,f)=>s+(+f.k||0),0);
+const proOf = l => (l.food||[]).reduce((s,f)=>s+(+f.p||0),0);
+function core(l){
+  const t = targets();
+  return { weighed: !!l.weight, fed: (l.food||[]).length>0, moved: l.workout==="lift" || l.workout==="cardio" || (l.steps||0) >= (t?.steps || 8000) };
+}
+function streak(){
+  let d = dayStr(); const ok = x => { const c = core(getLog(x)); return c.weighed && c.fed; };
+  if(!ok(d)) d = addDays(d,-1);
+  let n=0; while(ok(d) && n<2000){ n++; d = addDays(d,-1); }
+  return n;
+}
+
+/* ---------- UI ---------- */
+let toastT;
+function toast(msg, err){ const t=$("#toast"); t.textContent=msg; t.className="toast show"+(err?" err":""); clearTimeout(toastT); toastT=setTimeout(()=>t.className="toast",1400); }
+function setStatus(msg){ const s=$("#status"); s.hidden=!msg; s.textContent=msg||""; }
+
+function render(){
+  document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on", a.dataset.v===S.view));
+  $("#streak").textContent = streak();
+  if(!S.loaded){ $("#view").innerHTML = `<div class="empty">Loading your data…</div>`; return; }
+  $("#view").innerHTML = ({today:vToday, progress:vProgress, plan:vPlan, setup:vSetup}[S.view] || vToday)();
+  if(S.view==="progress") wireChart();
+}
+function updateDerived(){
+  $("#streak").textContent = streak();
+  if(S.view!=="today") return;
+  const l = getLog(S.day);
+  const a = $("#coreBox"); if(a) a.innerHTML = coreHTML(l);
+  const b = $("#fuelBars"); if(b) b.innerHTML = fuelBarsHTML(l);
+  const c = $("#wNote"); if(c) c.innerHTML = weightNote(l);
+}
+
+function coreHTML(l){
+  const c = core(l);
+  const p = (on,i,t)=>`<div class="pill ${on?"done":""}"><div class="i">${on?"✓":i}</div><div class="l">${t}</div></div>`;
+  return p(c.weighed,"⚖","Weighed in")+p(c.fed,"🍽","Food logged")+p(c.moved,"⚡","Trained / moved");
+}
+function fuelBarsHTML(l){
+  const t = targets(); const k = kcalOf(l), p = proOf(l);
+  if(!t) return `<p class="hint">Finish <a href="#setup" style="color:var(--acc2)">Setup</a> to get your calorie and protein targets.</p>
+    <div class="bar"><div class="top"><span>Calories</span><b>${k}</b></div></div>`;
+  const kp = Math.min(100,k/t.kcal*100), pp = Math.min(100,p/t.protein*100);
+  const left = t.kcal-k;
+  return `<div class="bar"><div class="top"><span>Calories · <b>${k}</b> / ${t.kcal}</span><span>${left>=0? left+" left" : (-left)+" over"}</span></div>
+    <div class="track"><div class="fill ${k>t.kcal?"over":""}" style="width:${kp}%"></div></div></div>
+    <div class="bar"><div class="top"><span>Protein · <b>${p}g</b> / ${t.protein}g</span><span>${Math.max(0,t.protein-p)}g to go</span></div>
+    <div class="track"><div class="fill pro" style="width:${pp}%"></div></div></div>`;
+}
+function weightNote(l){
+  if(!l.weight) return "Weigh in right after you wake up and use the bathroom, before you eat or drink. Same scale, same clothes (or none).";
+  const tr = trendAt(S.day); const prev = weighIns().filter(p=>p.d<S.day).pop();
+  let s = `7-day average: <b>${fmt(tr)}</b> lbs`;
+  if(prev) { const d = l.weight-prev.w; s += ` · vs last weigh-in: ${d>0?"+":""}${fmt(d)}`; }
+  return s + `<br>One day's number swings with water and salt. Go by the weekly average.`;
+}
+
+function vToday(){
+  const l = getLog(S.day), today = dayStr(), isToday = S.day===today;
+  const p = S.profile; const t = targets();
+  const dayN = p?.startDate ? daysBetween(p.startDate, S.day)+1 : null;
+  const meals = (p?.meals||[]);
+  const ck = l.checks||{};
+  const CHECKS = [["am","AM skincare: cleanser + moisturizer with SPF"],["pm","PM skincare: cleanser + moisturizer"],["teeth","Brush + floss"],["stretch","10 min stretching / posture work"],["phone","Phone down 30 min before bed"]];
+  return `
+  ${!t ? `<div class="card setup-cta"><h3>First: 60-second setup</h3><p class="hint" style="color:var(--tx2)">Add your height, age, weight and goal so Titan can work out your calories and protein.</p><a class="btn" href="#setup" style="display:inline-block;margin-top:10px;text-decoration:none">Go to Setup</a></div>`:""}
+  <div class="daynav">
+    <button data-act="prev" aria-label="Previous day">‹</button>
+    <div><div class="dlabel">${isToday?"Today · ":""}${fmtDate(S.day,{weekday:"long",month:"short",day:"numeric"})}</div>
+    <div class="dsub">${dayN && dayN>0 ? "Day "+dayN+" of Titan" : "&nbsp;"}</div></div>
+    <button data-act="next" ${isToday?"disabled":""} aria-label="Next day">›</button>
+  </div>
+  <div class="card"><h3>Core three <small>hit these every day</small></h3><div class="core" id="coreBox">${coreHTML(l)}</div></div>
+
+  <section class="card"><h3>Morning weigh-in</h3>
+    <div class="big"><input type="number" inputmode="decimal" step="0.1" placeholder="000.0" data-f="weight" value="${l.weight??""}"><span class="unit">lbs</span></div>
+    <p class="hint" id="wNote">${weightNote(l)}</p>
+  </section>
+
+  <section class="card"><h3>Fuel <small>food from Nutrislice / Lose It</small></h3>
+    <div id="fuelBars">${fuelBarsHTML(l)}</div>
+    ${meals.length ? `<div class="chips">${meals.map((m,i)=>`<button class="chip" data-act="meal" data-i="${i}">+ ${esc(m.name)}<span>${m.k}</span></button>`).join("")}</div>`
+      : `<p class="hint">Save your go-to dining hall meals in Setup and they'll appear here as one-tap buttons.</p>`}
+    <div class="addrow">
+      <input type="text" id="fn" placeholder="Food (or 'Lose It total')">
+      <input type="number" id="fk" inputmode="numeric" placeholder="kcal">
+      <input type="number" id="fp" inputmode="numeric" placeholder="protein g">
+      <button class="btn" data-act="addfood">Add</button>
+    </div>
+    ${(l.food||[]).length ? `<ul class="entries">${l.food.map((f,i)=>`<li><span>${esc(f.n)}</span><span class="m">${f.k} kcal · ${f.p||0}g</span><button class="x" data-act="delfood" data-i="${i}" aria-label="Remove">×</button></li>`).join("")}</ul>` : ""}
+    <p class="hint">Already logged everything in Lose It? Add the day's total as one line. A rough guess is better than leaving the day blank.</p>
+  </section>
+
+  <section class="card"><h3>Training <small>log the session itself in Hevy</small></h3>
+    <div class="seg">${[["lift","🏋 Lifted"],["cardio","🏃 Cardio"],["rest","😴 Rest day"]].map(([v,txt])=>`<button data-act="wo" data-v="${v}" class="${l.workout===v?"on":""}">${txt}</button>`).join("")}</div>
+    <div class="grid2" style="margin-top:12px">
+      <label class="f">Steps ${t?`<span style="color:var(--mute);font-weight:400">(goal ${t.steps.toLocaleString()})</span>`:""}<input type="number" inputmode="numeric" data-f="steps" value="${l.steps??""}" placeholder="0"></label>
+      <label class="f">Sleep last night (hrs)<input type="number" inputmode="decimal" step="0.25" data-f="sleep" value="${l.sleep??""}" placeholder="8"></label>
+    </div>
+    <label class="f" style="margin-top:12px">Water (bottles / big glasses)
+      <div class="stepper"><button data-act="water" data-d="-1">−</button><b>${l.water||0}</b><button data-act="water" data-d="1">+</button></div></label>
+  </section>
+
+  <section class="card"><h3>Glow-up habits</h3>
+    <div class="checks">${CHECKS.map(([k,txt])=>`<label><input type="checkbox" data-ck="${k}" ${ck[k]?"checked":""}> ${txt}</label>`).join("")}</div>
+  </section>`;
+}
+
+function vProgress(){
+  const w = weighIns(), t = targets(), p = S.profile||{};
+  const today = dayStr(), tr = trendAt(today) ?? (w.length? trendAt(w[w.length-1].d):null);
+  const start = p.startWeight ?? (w[0]?.w);
+  const rate = weeklyRate();
+  let eta = "—";
+  if(rate!=null && rate<-0.05 && tr!=null && p.goalWeight && tr>p.goalWeight){
+    const wk = (tr-p.goalWeight)/(-rate); const d = new Date(); d.setDate(d.getDate()+Math.round(wk*7));
+    eta = d.toLocaleDateString(undefined,{month:"short",day:"numeric",year: wk>40?"numeric":undefined});
+  }
+  let rateNote = "";
+  if(rate!=null && tr){
+    const pct = -rate/tr*100;
+    rateNote = pct>1.1 ? "You're losing faster than 1% of your weight a week. Eat a bit more so you keep your muscle."
+      : pct<0.25 ? "The trend is about flat. If it stays flat for 2 weeks, cut 150 kcal or add 2,000 steps a day."
+      : "That's a solid pace: fat is coming off and you get to keep your muscle.";
+  }
+  const lost = (start!=null && tr!=null) ? start-tr : null;
+  return `
+  <div class="tiles">
+    <div class="tile"><div class="v">${fmt(tr)}</div><div class="k">7-day avg (lbs)</div></div>
+    <div class="tile"><div class="v" style="color:${lost>0?"var(--good)":"var(--tx)"}">${lost==null?"—":(lost>0?"−":"+")+fmt(Math.abs(lost))}</div><div class="k">since start</div></div>
+    <div class="tile"><div class="v">${rate==null?"—":(rate>0?"+":"")+fmt(rate,2)}</div><div class="k">lbs / week</div></div>
+    <div class="tile"><div class="v">${eta}</div><div class="k">goal ${p.goalWeight?"("+p.goalWeight+")":""} ETA</div></div>
+  </div>
+  ${rateNote?`<p class="hint" style="margin:-4px 2px 12px">${rateNote}</p>`:""}
+  <section class="card"><h3>Weight trend</h3>
+    ${w.length<2 ? `<div class="empty">Log at least two morning weigh-ins and your trend line will show up here.</div>` : `
+    <div class="ranges">${[[30,"30 days"],[90,"90 days"],[0,"All"]].map(([v,txt])=>`<button data-act="range" data-v="${v}" class="${S.range===v?"on":""}">${txt}</button>`).join("")}</div>
+    <div class="chartbox" id="chartbox">${chartSVG()}<div class="tt" id="tt"></div></div>`}
+  </section>
+  <section class="card"><h3>Week by week</h3>${weeklyTable(t)}</section>`;
+}
+
+function chartData(){
+  const w = weighIns(); const today = dayStr();
+  const from = S.range ? addDays(today, -S.range+1) : w[0].d;
+  const pts = w.filter(p=>p.d>=from);
+  return pts.map(p=>({d:p.d, w:p.w, a:trendAt(p.d)}));
+}
+let CH = null;
+function chartSVG(){
+  const pts = chartData(); if(pts.length<1) return `<div class="empty">No weigh-ins in this range.</div>`;
+  const W=Math.max(300,Math.min(680,($("#view").clientWidth||640)-30)),H=Math.round(W*0.5)+30,L=40,R=12,T=12,B=26;
+  const goal = S.profile?.goalWeight;
+  let lo = Math.min(...pts.map(p=>Math.min(p.w,p.a))), hi = Math.max(...pts.map(p=>Math.max(p.w,p.a)));
+  if(goal && goal>=lo-6) lo = Math.min(lo,goal);
+  lo = Math.floor(lo-1); hi = Math.ceil(hi+1);
+  const d0 = pts[0].d, span = Math.max(1, daysBetween(d0, pts[pts.length-1].d));
+  const x = d => L + (W-L-R) * daysBetween(d0,d)/span;
+  const y = v => T + (H-T-B) * (hi-v)/(hi-lo);
+  const step = Math.max(1, Math.ceil((hi-lo)/5));
+  let g = "";
+  for(let v=Math.ceil(lo); v<=hi; v+=step){ g += `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#2a2724"/><text x="${L-8}" y="${y(v)+4}" fill="#8f877c" font-size="11" text-anchor="end">${v}</text>`; }
+  const ticks = Math.min(5, pts.length); let xl="";
+  for(let i=0;i<ticks;i++){ const p = pts[Math.round(i*(pts.length-1)/Math.max(1,ticks-1))]; xl += `<text x="${x(p.d)}" y="${H-8}" fill="#8f877c" font-size="11" text-anchor="${i===0?"start":i===ticks-1?"end":"middle"}">${fmtDate(p.d)}</text>`; }
+  const goalLine = goal && goal>=lo && goal<=hi ? `<line x1="${L}" x2="${W-R}" y1="${y(goal)}" y2="${y(goal)}" stroke="#5fbf86" stroke-width="1.5" stroke-dasharray="5 5"/><text x="${W-R}" y="${y(goal)-6}" fill="#5fbf86" font-size="11" text-anchor="end">goal ${goal}</text>` : "";
+  const line = pts.map((p,i)=>(i?"L":"M")+x(p.d).toFixed(1)+" "+y(p.a).toFixed(1)).join(" ");
+  const dots = pts.map(p=>`<circle cx="${x(p.d)}" cy="${y(p.w)}" r="3.5" fill="#8f877c" stroke="#1a1816" stroke-width="2"/>`).join("");
+  CH = {pts, x, y, W, H, L, R, T, B};
+  const showGoal = goal && goal>=lo && goal<=hi;
+  const legend = `<div class="legend"><span><i class="dot" style="background:var(--mute)"></i>Daily weigh-in</span><span><i style="background:var(--acc2)"></i>7-day average</span>${showGoal?`<span><i style="background:none;height:0;border-top:2px dashed var(--good)"></i>Goal</span>`:goal?`<span style="color:var(--mute)">Goal ${goal} is below this view</span>`:""}</div>`;
+  return legend + `<svg viewBox="0 0 ${W} ${H}" id="chart" role="img" aria-label="Weight over time">${g}${xl}${goalLine}${dots}
+    <path d="${line}" fill="none" stroke="#e8a33d" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <line id="xh" y1="${T}" y2="${H-B}" stroke="#c9c1b6" stroke-width="1" opacity="0"/>
+    <circle id="xd" r="5" fill="#e8a33d" stroke="#1a1816" stroke-width="2" opacity="0"/>
+    <rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="transparent" id="hit"/></svg>`;
+}
+function wireChart(){
+  const svg = $("#chart"); if(!svg || !CH) return;
+  const tt = $("#tt"), xh = $("#xh"), xd = $("#xd");
+  const move = e => {
+    const r = svg.getBoundingClientRect(); const sx = (e.clientX - r.left) * CH.W / r.width;
+    let best = CH.pts[0], bd = 1e9; CH.pts.forEach(p=>{ const d=Math.abs(CH.x(p.d)-sx); if(d<bd){bd=d;best=p;} });
+    const px = CH.x(best.d);
+    xh.setAttribute("x1",px); xh.setAttribute("x2",px); xh.setAttribute("opacity",.5);
+    xd.setAttribute("cx",px); xd.setAttribute("cy",CH.y(best.a)); xd.setAttribute("opacity",1);
+    tt.style.display="block"; tt.style.left = (px/CH.W*r.width)+"px"; tt.style.top = (CH.y(Math.max(best.w,best.a))/CH.H*r.height)+"px";
+    tt.innerHTML = `<b>${fmtDate(best.d,{weekday:"short",month:"short",day:"numeric"})}</b><br>Weigh-in ${fmt(best.w)} · Avg ${fmt(best.a)}`;
+  };
+  const out = () => { tt.style.display="none"; xh.setAttribute("opacity",0); xd.setAttribute("opacity",0); };
+  svg.addEventListener("pointermove", move); svg.addEventListener("pointerdown", move); svg.addEventListener("pointerleave", out);
+}
+function weeklyTable(t){
+  const logs = Object.values(S.logs); if(!logs.length) return `<div class="empty">Your weekly summary builds up as you log.</div>`;
+  const wk = {};
+  logs.forEach(l=>{ const d = parseDay(l.date); const mon = new Date(d); mon.setDate(d.getDate()-((d.getDay()+6)%7)); const k = dayStr(mon);
+    (wk[k] ||= {w:[],k:[],lift:0,logged:0}); if(l.weight) wk[k].w.push(l.weight); const kc = kcalOf(l); if(kc) wk[k].k.push(kc); if(l.workout==="lift") wk[k].lift++; if(core(l).weighed && core(l).fed) wk[k].logged++; });
+  const avg = a => a.length ? a.reduce((s,v)=>s+v,0)/a.length : null;
+  const rows = Object.keys(wk).sort().reverse().slice(0,12);
+  return `<table><thead><tr><th>Week of</th><th>Avg weight</th><th>Avg kcal</th><th>Lifts</th><th>Full days</th></tr></thead><tbody>
+  ${rows.map(k=>{ const r=wk[k], ak=avg(r.k); return `<tr><td>${fmtDate(k)}</td><td>${fmt(avg(r.w))}</td><td style="color:${t&&ak&&ak>t.kcal+100?"var(--bad)":"inherit"}">${ak?Math.round(ak):"—"}</td><td>${r.lift}</td><td>${r.logged}/7</td></tr>`; }).join("")}
+  </tbody></table><p class="hint">"Full day" = weighed in and logged food. Aim for 6/7 or better.</p>`;
+}
+
+function vPlan(){
+  const t = targets(), p = S.profile||{};
+  return `<div class="plan">
+  <section class="card"><h3>The build</h3>
+    <p>Brand New Day Holland is <b>lean and athletic</b>, with more size through the <b>shoulders, arms and chest</b> than in his earlier Spider-Man films. You get there in two phases: <b>cut</b> while lifting heavy, so fat comes off and muscle stays, then a slow <b>lean bulk</b> to add size. Titan starts with the cut.</p>
+  </section>
+  <section class="card"><h3>Your numbers</h3>
+    ${t ? `<div class="target"><div><b>${t.kcal}</b><span>kcal / day</span></div><div><b>${t.protein}g</b><span>protein / day</span></div><div><b>${t.steps.toLocaleString()}</b><span>steps / day</span></div><div><b>8+ hrs</b><span>sleep</span></div></div>
+    <p class="hint">You burn about ${t.tdee} kcal a day, so this is roughly a 500 kcal deficit, or about 1 lb a week. Aim to lose 0.5–1% of your body weight per week. The targets update as your weight drops.</p>`
+    : `<p>Finish <a href="#setup" style="color:var(--acc2)">Setup</a> to see your calorie and protein targets.</p>`}
+  </section>
+  <section class="card"><h3>Training · 4 days in Hevy</h3>
+    <ul>
+      <li><b>Upper A (push):</b> bench or incline DB press, overhead press, lateral raises, dips, triceps</li>
+      <li><b>Lower:</b> squat or leg press, Romanian deadlift, lunges, calves, hanging leg raises</li>
+      <li><b>Upper B (pull):</b> pull-ups, rows, face pulls, rear delts, curls</li>
+      <li><b>Spider day:</b> "Cindy" (5 pull-ups, 10 push-ups, 15 squats, as many rounds as possible in 20 minutes; Holland's best is 27 rounds) + extra shoulders and arms</li>
+    </ul>
+    <p class="hint">Get stronger every week: add a rep or a little weight on your main lifts. Hevy shows your past numbers, so try to beat them. Shoulders and back are what make the V-shape, so give them the most work.</p>
+  </section>
+  <section class="card"><h3>Eating at the dining hall</h3>
+    <ul>
+      <li>Check the menu in <b>Nutrislice before you walk in</b> and decide what you're getting.</li>
+      <li>Fill the plate with <b>protein first</b> (chicken, eggs, lean meat, Greek yogurt, milk), then vegetables, then carbs.</li>
+      <li>Pick <b>5–6 go-to meals</b> and save them in Setup. Logging then takes one tap.</li>
+      <li>Skip sugary drinks and keep dessert to 1–2 times a week. These are the easiest calories to cut.</li>
+    </ul>
+  </section>
+  <section class="card"><h3>Consistency rules</h3>
+    <ul>
+      <li><b>Never miss twice.</b> One bad day doesn't matter. Two in a row is how habits die.</li>
+      <li><b>Log the rough version.</b> "Dining hall dinner, ~900" beats a blank day.</li>
+      <li><b>Weigh in every day, judge every week.</b> Only the 7-day average counts.</li>
+      <li>Do the <b>Core three</b> before bed: weighed in, food logged, trained or moved.</li>
+    </ul>
+  </section>
+  <section class="card"><h3>Glow-up beyond the gym</h3>
+    <ul>
+      <li><b>Skin:</b> gentle cleanser + moisturizer with SPF in the morning, cleanser + moisturizer at night. Stick with it 6–8 weeks before judging.</li>
+      <li><b>Hair:</b> a cut that suits your face shape, refreshed every 3–4 weeks. Ask the barber, and save a photo of it.</li>
+      <li><b>Posture:</b> face pulls, rows and daily stretching. Standing tall changes how you look right away.</li>
+      <li><b>Clothes:</b> once you're down a size, buy a few basics that fit well. Fit matters more than brand.</li>
+      <li><b>Sleep:</b> 8+ hours. It controls hunger, recovery and skin, and Holland says he wants 9–10 himself.</li>
+    </ul>
+  </section></div>`;
+}
+
+function vSetup(){
+  const p = S.profile || {}; const t = targets();
+  const ft = p.heightIn ? Math.floor(p.heightIn/12) : "", inch = p.heightIn ? Math.round(p.heightIn%12) : "";
+  return `
+  <section class="card"><h3>About you</h3>
+    <div class="grid2">
+      <label class="f">Height (ft)<input type="number" id="sft" value="${ft}" inputmode="numeric" placeholder="5"></label>
+      <label class="f">Height (in)<input type="number" id="sin" value="${inch}" inputmode="numeric" placeholder="10"></label>
+      <label class="f">Age<input type="number" id="sage" value="${p.age??""}" inputmode="numeric"></label>
+      <label class="f">Starting weight (lbs)<input type="number" id="ssw" value="${p.startWeight??""}" inputmode="decimal" step="0.1"></label>
+      <label class="f">Goal weight (lbs)<input type="number" id="sgw" value="${p.goalWeight??""}" inputmode="decimal" step="0.1"></label>
+      <label class="f">Daily step goal<input type="number" id="ssteps" value="${p.stepGoal??8000}" inputmode="numeric"></label>
+    </div>
+    <label class="f" style="margin-top:10px">Activity level<select id="sact">${Object.entries(ACT).map(([k,[,txt]])=>`<option value="${k}" ${ (p.activity||"moderate")===k?"selected":""}>${txt}</option>`).join("")}</select></label>
+    <details style="margin-top:12px"><summary style="cursor:pointer;color:var(--tx2);font-size:13px">Set your own targets instead (optional)</summary>
+      <div class="grid2" style="margin-top:8px">
+        <label class="f">Calories<input type="number" id="sck" value="${p.calOverride??""}" placeholder="auto"></label>
+        <label class="f">Protein (g)<input type="number" id="scp" value="${p.proteinOverride??""}" placeholder="auto"></label>
+      </div></details>
+    <button class="btn" data-act="saveprofile" style="margin-top:14px;width:100%">Save</button>
+    ${t?`<p class="hint">Current targets: <b style="color:var(--tx)">${t.kcal} kcal</b>, <b style="color:var(--tx)">${t.protein}g protein</b>.</p>`:""}
+  </section>
+  <section class="card"><h3>Go-to meals <small>one-tap buttons on Today</small></h3>
+    ${(p.meals||[]).length ? `<ul class="entries">${p.meals.map((m,i)=>`<li><span>${esc(m.name)}</span><span class="m">${m.k} kcal · ${m.p||0}g</span><button class="x" data-act="delmeal" data-i="${i}">×</button></li>`).join("")}</ul>` : `<p class="hint">Add the dining hall meals you eat most. Use Nutrislice for the numbers.</p>`}
+    <div class="addrow">
+      <input type="text" id="mn" placeholder="e.g. Grilled chicken plate">
+      <input type="number" id="mk" placeholder="kcal" inputmode="numeric">
+      <input type="number" id="mp" placeholder="protein g" inputmode="numeric">
+      <button class="btn" data-act="addmeal">Save</button>
+    </div>
+  </section>
+  <section class="card"><h3>Backup <small>your data lives on this phone</small></h3>
+    <p class="hint" style="margin-top:0">Titan saves to this phone only. Make a backup now and then (Sunday is a good habit) and keep it in iCloud Drive or Files.</p>
+    <div class="grid2" style="margin-top:10px">
+      <button class="btn ghost" data-act="export">Save backup file</button>
+      <button class="btn ghost" data-act="restore">Restore backup</button>
+    </div>
+    <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+    <p class="hint">${Object.keys(S.logs).length} day${Object.keys(S.logs).length===1?"":"s"} logged${S.lastBackup?` · last backup ${fmtDate(S.lastBackup)}`:""}</p>
+  </section>`;
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-act]"); if(!b) return;
+  const a = b.dataset.act, i = +b.dataset.i;
+  if(a==="prev"){ S.day = addDays(S.day,-1); render(); }
+  else if(a==="next"){ if(S.day<dayStr()){ S.day = addDays(S.day,1); render(); } }
+  else if(a==="meal"){ const m = S.profile.meals[i]; editLog(S.day, l=>{ (l.food ||= []).push({n:m.name,k:m.k,p:m.p||0}); }, true); }
+  else if(a==="addfood"){
+    const n = $("#fn").value.trim() || "Food", k = num($("#fk").value), p = num($("#fp").value);
+    if(k==null){ $("#fk").focus(); toast("Enter calories", true); return; }
+    editLog(S.day, l=>{ (l.food ||= []).push({n, k:Math.round(k), p:Math.round(p||0)}); }, true);
+  }
+  else if(a==="delfood"){ editLog(S.day, l=>{ l.food.splice(i,1); }, true); }
+  else if(a==="wo"){ const v=b.dataset.v; editLog(S.day, l=>{ l.workout = l.workout===v ? "" : v; }, true); }
+  else if(a==="water"){ editLog(S.day, l=>{ l.water = Math.max(0,(l.water||0)+(+b.dataset.d)); }, true); }
+  else if(a==="range"){ S.range = +b.dataset.v; render(); }
+  else if(a==="saveprofile"){
+    const ft=num($("#sft").value)||0, inch=num($("#sin").value)||0;
+    editProfile(p=>{
+      p.heightIn = ft*12+inch || null; p.age = num($("#sage").value); p.startWeight = num($("#ssw").value);
+      p.goalWeight = num($("#sgw").value); p.activity = $("#sact").value; p.stepGoal = num($("#ssteps").value)||8000;
+      p.calOverride = num($("#sck").value); p.proteinOverride = num($("#scp").value);
+      if(!p.startDate) p.startDate = dayStr();
+    });
+    render(); toast("Saved");
+  }
+  else if(a==="addmeal"){
+    const n=$("#mn").value.trim(), k=num($("#mk").value), p=num($("#mp").value);
+    if(!n || k==null){ toast("Name and calories needed", true); return; }
+    editProfile(pr=>{ (pr.meals ||= []).push({name:n,k:Math.round(k),p:Math.round(p||0)}); }); render();
+  }
+  else if(a==="delmeal"){ editProfile(pr=>{ pr.meals.splice(i,1); }); render(); }
+  else if(a==="export"){ exportBackup(); }
+  else if(a==="restore"){ $("#restoreFile").click(); }
+});
+document.addEventListener("input", e=>{
+  const f = e.target.dataset.f;
+  if(f){ editLog(S.day, l=>{ l[f] = num(e.target.value); }); return; }
+  const c = e.target.dataset.ck;
+  if(c){ editLog(S.day, l=>{ (l.checks ||= {})[c] = e.target.checked; }); }
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="fp"||e.target.id==="fk"||e.target.id==="fn")) document.querySelector('[data-act="addfood"]')?.click(); });
+document.addEventListener("focusout", ()=>setTimeout(()=>{ if(S.deferred && !inputFocused()){ S.deferred=false; render(); } },400));
+const inputFocused = () => { const a=document.activeElement; return a && $("#view").contains(a) && /INPUT|SELECT/.test(a.tagName) && a.type!=="checkbox"; };
+function scheduleRender(){ if(inputFocused()){ S.deferred = true; updateDerived(); } else render(); }
+
+function route(){ const h = location.hash.slice(1); S.view = ["today","progress","plan","setup"].includes(h) ? h : "today"; render(); window.scrollTo(0,0); }
+window.addEventListener("hashchange", route);
+route();
+
+/* ---------- local data ---------- */
+async function exportBackup(){
+  persist();
+  const json = JSON.stringify({v:1, app:"Project: Titan", profile:S.profile, logs:S.logs, exportedAt:new Date().toISOString()});
+  const name = "titan-backup-"+dayStr()+".json";
+  const file = new File([json], name, {type:"application/json"});
+  try{
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:name}); }
+    else { const a=document.createElement("a"); a.href=URL.createObjectURL(file); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); }
+    try{ localStorage.setItem(KEY+".lastBackup", dayStr()); S.lastBackup = dayStr(); }catch(e){}
+    render(); toast("Backup ready");
+  }catch(e){ if(e && e.name!=="AbortError") toast("Couldn't make the backup", true); }
+}
+document.addEventListener("change", async e=>{
+  if(e.target.id!=="restoreFile" || !e.target.files[0]) return;
+  try{
+    const d = JSON.parse(await e.target.files[0].text());
+    if(!d || typeof d.logs!=="object") throw 0;
+    S.profile = d.profile || S.profile; S.logs = d.logs || {}; persist(); render();
+    toast("Restored "+Object.keys(S.logs).length+" days");
+  }catch(err){ toast("That file isn't a Titan backup", true); }
+  e.target.value = "";
+});
+(function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(d){ S.profile = d.profile || null; S.logs = d.logs || {}; }
+    S.lastBackup = localStorage.getItem(KEY+".lastBackup");
+  }catch(e){ setStatus("This browser is blocking storage, so logs won't be saved. Open Titan from your home screen."); }
+  if(!S.profile){ S.profile = {startDate:dayStr(), activity:"moderate", stepGoal:8000, meals:[]}; persist(); }
+  if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+  S.loaded = true; route();
+  // refresh "today" when the app is reopened on a new day
+  let lastDay = dayStr();
+  document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible" && dayStr()!==lastDay){ if(S.day===lastDay) S.day = dayStr(); lastDay = dayStr(); render(); } });
+  if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+})();
+</script>
+</body>
+</html>
